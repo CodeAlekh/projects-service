@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: payments-service
+  lifecycle:
+    # On shutdown, finish in-flight requests for up to 20s before stopping
+    timeout-per-shutdown-phase: 20s
+
+server:
+  port: 8080
+  shutdown: graceful
+
+management:
+  endpoint:
+    health:
+      probes:
+        # Exposes /actuator/health/liveness and /actuator/health/readiness.
+        # Spring enables these automatically inside Kubernetes; this makes
+        # them available locally too.
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info
