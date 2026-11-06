@@ -4,6 +4,22 @@ spring:
   lifecycle:
     # On shutdown, finish in-flight requests for up to 20s before stopping
     timeout-per-shutdown-phase: 20s
+  datasource:
+    # JDBC URL without credentials, e.g. jdbc:postgresql://host:5432/payments.
+    # Username/password come separately (SPRING_DATASOURCE_USERNAME /
+    # SPRING_DATASOURCE_PASSWORD for now, later dynamic creds from Vault).
+    url: ${APP_POSTGRES_URL}
+    hikari:
+      maximum-pool-size: 5
+      # Fail fast instead of hanging requests when Postgres is unreachable
+      connection-timeout: 3000
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    # Flyway migrations will own the schema once we add tables.
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
 
 server:
   port: 8080
@@ -17,6 +33,21 @@ management:
         # Spring enables these automatically inside Kubernetes; this makes
         # them available locally too.
         enabled: true
+      # Overall health check (/actuator/health): list each component's status
+      # (db, diskSpace, ping, ...) but not its details (hostnames, versions).
+      show-components: always
+      # Each probe group is also served on the main server port as /livez and
+      # /readyz (the Kubernetes convention), alongside /actuator/health/*.
+      group:
+        liveness:
+          # Only the app's own state: a Postgres outage must never restart the pod.
+          include: livenessState
+          additional-path: server:/livez
+        readiness:
+          additional-path: server:/readyz
+          # Not ready when Postgres is down: Kubernetes stops sending traffic
+          # but does NOT restart the pod (liveness stays independent of the DB).
+          include: readinessState,db
   endpoints:
     web:
       exposure:

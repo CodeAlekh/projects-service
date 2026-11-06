@@ -1,12 +1,12 @@
 plugins {
 	java
-	id("org.springframework.boot") version "4.1.2"
+	id("org.springframework.boot") version "3.5.16"
 	id("io.spring.dependency-management") version "1.1.7"
 }
 
 group = "io.github.codealekh"
-version = "0.0.1-SNAPSHOT"
-description = "Payments service: quotes and idempotent transfers"
+version = "0.0.1"
+description = "Projects service"
 
 java {
 	toolchain {
@@ -20,12 +20,22 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
-	implementation("org.springframework.boot:spring-boot-starter-webmvc")
-	testImplementation("org.springframework.boot:spring-boot-starter-actuator-test")
-	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	runtimeOnly("org.postgresql:postgresql")
+	// Not tests: used only by `./gradlew bootTestRun` to start a local Postgres container
+	testImplementation("org.springframework.boot:spring-boot-testcontainers")
+	testImplementation("org.testcontainers:postgresql")
 }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
+tasks.test {
+	enabled = false
+}
+
+tasks.jar {
+	enabled = false                      // don't produce the -plain.jar at all
+}
+
+tasks.bootJar {
+	archiveFileName.set("projects-service.jar")
 }

@@ -1,0 +1,22 @@
+# Files Docker should NOT send to the build (the "build context").
+# Same idea as .gitignore, but for `docker build`.
+
+# Secrets: never let these end up in any image layer
+.env
+.env.*
+
+# Git history: large and not needed to build
+.git
+
+# Local build output and caches: the image builds its own from scratch
+build
+.gradle
+
+# IDE settings
+.idea
+*.iml
+.vscode
+
+# The Dockerfile and this file aren't needed inside the image
+Dockerfile
+.dockerignore
