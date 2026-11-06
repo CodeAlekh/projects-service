@@ -1,24 +1,30 @@
-# Stage 0: development
-FROM gradle:8.6-jdk17 AS dev
-WORKDIR /app
-
 # Stage 1: Build the application
-FROM gradle:8.6-jdk17 AS build
+FROM eclipse-temurin:21.0.13_9-jdk-ubi9-minimal AS build
 
 WORKDIR /app
 
-COPY src .
-RUN gradle clean build -x test -Dsonar.gradle.skipCompile=true
+# Build files first: these rarely change, so the dependency layer below stays cached
+COPY gradlew settings.gradle.kts build.gradle.kts ./
+COPY gradle/ gradle/
+RUN ./gradlew dependencies --no-daemon
+
+# Source last: editing code only invalidates from here down
+COPY src/ src/
+RUN ./gradlew bootJar --no-daemon
 
 # Stage 2: Create the final image
-FROM amazoncorretto:17-al2023-headless as prod
+FROM eclipse-temurin:21.0.13_9-jre-ubi9-minimal AS prod
+
+# Non-root user with a fixed numeric UID (Kubernetes runAsNonRoot can only verify numeric UIDs)
+RUN useradd --uid 10001 --no-create-home --shell /sbin/nologin app
 
 WORKDIR /opt
 
 # Copy the built JAR from the build stage
-COPY --from=build /app/build/libs/projects-service.jar projects-service.jar
+COPY --from=build --chown=10001:10001 /app/build/libs/projects-service.jar projects-service.jar
+
+USER 10001
 
 # Expose necessary ports
 EXPOSE 8080
-# JVM Flags can be adjusted as per your needs
-ENTRYPOINT ["java", "-Xms512m", "-Xmx1024m", "-jar", "projects-service.jar"]
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-jar", "projects-service.jar"]
