@@ -1,4 +1,4 @@
-package io.github.codealekh.payments;
+package io.github.codealekh.projects;
 
 import org.springframework.boot.SpringApplication;
 
@@ -6,10 +6,10 @@ import org.springframework.boot.SpringApplication;
  * Local dev entry point: `./gradlew bootTestRun` starts the app together
  * with a Postgres container, so no local DB install or credentials needed.
  */
-public class TestPaymentsServiceApplication {
+public class TestProjectsServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.from(PaymentsServiceApplication::main)
+        SpringApplication.from(ProjectsServiceApplication::main)
                 .with(TestcontainersConfiguration.class)
                 .run(args);
     }

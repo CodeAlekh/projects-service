@@ -1,13 +1,13 @@
-package io.github.codealekh.payments;
+package io.github.codealekh.projects;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PaymentsServiceApplication {
+public class ProjectsServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PaymentsServiceApplication.class, args);
+		SpringApplication.run(ProjectsServiceApplication.class, args);
 	}
 
 }

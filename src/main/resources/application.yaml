@@ -1,11 +1,11 @@
 spring:
   application:
-    name: payments-service
+    name: projects-service
   lifecycle:
     # On shutdown, finish in-flight requests for up to 20s before stopping
     timeout-per-shutdown-phase: 20s
   datasource:
-    # JDBC URL without credentials, e.g. jdbc:postgresql://host:5432/payments.
+    # JDBC URL without credentials, e.g. jdbc:postgresql://host:5432/projects.
     # Username/password come separately (SPRING_DATASOURCE_USERNAME /
     # SPRING_DATASOURCE_PASSWORD for now, later dynamic creds from Vault).
     url: ${APP_POSTGRES_URL}

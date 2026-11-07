@@ -1,4 +1,4 @@
-package io.github.codealekh.payments.db;
+package io.github.codealekh.projects.db;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package io.github.codealekh.payments;
+package io.github.codealekh.projects;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
