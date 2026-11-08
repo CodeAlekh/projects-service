@@ -6,8 +6,8 @@ spring:
     timeout-per-shutdown-phase: 20s
   datasource:
     # JDBC URL without credentials, e.g. jdbc:postgresql://host:5432/projects.
-    # Username/password come separately (SPRING_DATASOURCE_USERNAME /
-    # SPRING_DATASOURCE_PASSWORD for now, later dynamic creds from Vault).
+    # Username/password come separately (POSTGRES_USERNAME /
+    # POSTGRES_PASSWORD for now, later dynamic creds from Vault).
     url: ${APP_POSTGRES_URL}
     hikari:
       maximum-pool-size: 5
@@ -24,6 +24,8 @@ spring:
 server:
   port: 8080
   shutdown: graceful
+  servlet:
+    context-path: /projects
 
 management:
   endpoint:
