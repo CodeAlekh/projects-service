@@ -1,5 +1,7 @@
 # Stage 1: Build the application
-FROM eclipse-temurin:21.0.13_9-jdk-ubi9-minimal AS build
+# Runs on the builder's own CPU ($BUILDPLATFORM): the JAR is the same on every
+# platform, so it is built once at full speed instead of again under ARM emulation
+FROM --platform=$BUILDPLATFORM eclipse-temurin:21.0.13_9-jdk-ubi9-minimal AS build
 
 WORKDIR /app
 
