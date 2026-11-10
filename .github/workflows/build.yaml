@@ -1,0 +1,38 @@
+name: Build image                 # shown in the Actions tab
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:              # adds a "Run workflow" button, handy for testing
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout to repo
+        uses: actions/checkout@v7
+
+      - name: Enable ARM emulation
+        uses: docker/setup-qemu-action@v4
+
+      - name: Set up Buildx (multi-platform builder)
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ghcr.io/codealekh/projects-service:${{ github.sha }}
